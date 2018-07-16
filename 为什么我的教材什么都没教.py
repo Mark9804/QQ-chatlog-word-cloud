@@ -93,6 +93,7 @@ def draw(name, message_counter, token):
 if __name__ == '__main__':
     message_data = read('chatlog')
     message_data = delete(message_data)
+    global token
     token = 0
     for qq in message_data.keys():
         draw(message_data[qq]['name'], message_data[qq]['message'], token)
