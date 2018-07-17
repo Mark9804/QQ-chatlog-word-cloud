@@ -69,7 +69,7 @@ def draw(name, message_counter, token):
     )
     word_dict = {}
     for item in list(message_counter.keys()):
-        if message_counter[item] >= 5:
+        if message_counter[item] >= 3:
             word_dict[item] = message_counter[item]
     #print(word_dict)
 
@@ -79,16 +79,21 @@ def draw(name, message_counter, token):
     for item in list(word_dict.keys()):
         if item.isdigit():
             del word_dict[item]
+    
+    
     if  word_dict:
         #有人发言的词汇的最大频数不超过5次！，不能传入空字典给wordcloud绘图
-        token += 1
+        token = token + 1
         print('进入if not分支，还未绘图，token = ' + str(token))
         word_cloud_pic = wc.generate_from_frequencies(word_dict)
         print('绘图成功')
         plt.imshow(word_cloud_pic)
         plt.title(name)
         plt.axis('off')
-        plt.savefig('图片\\'+name+'.png', dpi=400)
+        name = re.sub(r'[\/|:*?"<>]*', '', name)
+        #替换非法文件名，求求你们起个正常的群名片好嘛！！感谢西安蓝军大佬EastMagica
+        print(name)
+        plt.savefig('图片\\'+str(name)+'.png', dpi=400)
      
 if __name__ == '__main__':
     message_data = read('chatlog')
