@@ -98,6 +98,9 @@ def draw(name, message_counter, token):
 if __name__ == '__main__':
     message_data = read('chatlog')
     message_data = delete(message_data)
+    if not os.path.exists(r'图片'):
+        os.makedirs(r'图片')
+    #乖乖站好♂啊？
     global token
     token = 0
     for qq in message_data.keys():
