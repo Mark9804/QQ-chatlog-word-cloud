@@ -27,6 +27,7 @@ def read(name):
         for item in message_data:
             #item[0]=date, item[1]=time, item[2]=name, item[3]=QQ, item[4]=message
             if not word_data.get(item[3]):
+                #如果词典里没有过这个QQ号
                 word_data[item[3]] = {'name' : item[2], 'message' : list(jb.cut(item[4]))}
                 #字典中嵌套字典
                 #第一层的字典的key是QQ号，value是一个包括名字和消息的字典
@@ -59,7 +60,8 @@ def delete(data):
     #        f.writelines(str(data[qq]['message'])+'\n')
     return data
 #data是一个三层嵌套，第一层key = QQ号，第二层key有QQ名和message，message下有第三层是单词和频次
-def draw(name, message_counter, token):
+def draw(name, message_counter):
+    global token
     #token记录成功进入if not分支的次数
     wc = WordCloud(
         font_path = 'msyh.ttc',
@@ -83,7 +85,7 @@ def draw(name, message_counter, token):
     
     if  word_dict:
         #有人发言的词汇的最大频数不超过5次！，不能传入空字典给wordcloud绘图
-        token = token + 1
+        token += 1
         print('进入if not分支，还未绘图，token = ' + str(token))
         word_cloud_pic = wc.generate_from_frequencies(word_dict)
         print('绘图成功')
@@ -94,17 +96,19 @@ def draw(name, message_counter, token):
         #替换非法文件名，求求你们起个正常的群名片好嘛！！感谢西安蓝军大佬EastMagica
         print(name)
         plt.savefig('图片\\'+str(name)+'.png', dpi=400)
-     
+
+
+token = 0
+    
 if __name__ == '__main__':
     message_data = read('chatlog')
     message_data = delete(message_data)
     if not os.path.exists(r'图片'):
         os.makedirs(r'图片')
     #乖乖站好♂啊？
-    global token
-    token = 0
+
     for qq in message_data.keys():
-        draw(message_data[qq]['name'], message_data[qq]['message'], token)
+        draw(message_data[qq]['name'], message_data[qq]['message'])
 
 
             
