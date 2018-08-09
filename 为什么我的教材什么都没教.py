@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 from scipy.misc import imread
 from pylab import mpl
+import operator
 
 message_re = "(201\d-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2}) (.*)[\(,<](.+)[\),>]\n(.*)(?=\n\n)"
 #r可以不要把
@@ -54,10 +55,10 @@ def delete(data):
                 #要对字典进行操作的话不能用字典.keys()作索引，因为字典内容会变，必须用list取一个原始的拷贝
                 if word in stopword:
                     del(data[item]['message'][word])
-    #with open('第二次delete以后的字典.txt','a',encoding = 'utf-8') as f:
-    #    for qq in list(data.keys()):
-    #        f.writelines(str(data[qq]['name'])+'\n')
-    #        f.writelines(str(data[qq]['message'])+'\n')
+#    with open('第二次delete以后的字典.txt','a',encoding = 'utf-8') as f:
+#        for qq in list(data.keys()):
+#            f.writelines(str(data[qq]['name'])+'\n')
+#            f.writelines(str(data[qq]['message'])+'\n')
     return data
 #data是一个三层嵌套，第一层key = QQ号，第二层key有QQ名和message，message下有第三层是单词和频次
 def draw(name, message_counter):
@@ -97,6 +98,17 @@ def draw(name, message_counter):
         print(name)
         plt.savefig('图片\\'+str(name)+'.png', dpi=400)
 
+def dangerous_senpai(name, message_counter):
+    '''
+    统计说“学妹”次数最多的危险学长
+    '''
+    i = 0
+    for item in list(message_counter.keys()):
+        if item == '学妹':
+            i = message_counter[item]
+    senpai[name] = i
+    with open('谁是最危险的学长.txt', 'w', encoding='utf-8') as f:
+        f.writelines(name + '一共说了' + str(i) + '次学妹' + '\n')
 
 token = 0
     
@@ -106,9 +118,14 @@ if __name__ == '__main__':
     if not os.path.exists(r'图片'):
         os.makedirs(r'图片')
     #乖乖站好♂啊？
-
+    senpai ={}
     for qq in message_data.keys():
         draw(message_data[qq]['name'], message_data[qq]['message'])
+        dangerous_senpai(message_data[qq]['name'], message_data[qq]['message'])
 
+    
+    with open('sorted.txt', 'w', encoding = 'utf-8') as f:
+        for key, value in sorted(senpai.items(), key=operator.itemgetter(1), reverse=True):
+            f.writelines(key + '居然说了' + str(senpai[key]) + '次学妹' + '\n')
 
             
